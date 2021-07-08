@@ -1,0 +1,50 @@
+#! /usr/bin/env python
+"""生成vscode的调试配置。执行后将对应配置复制到launch.json中即可。
+"""
+import sys
+import os
+import jstyleson as json
+from pprint import pprint
+if __name__ == "__main__":
+    cwd = os.getcwd()
+    if "python" in sys.argv:
+        python_idx = sys.argv.index("python")
+    elif "python3" in sys.argv:
+        python_idx = sys.argv.index("python3")
+    else: 
+        print("Can't find python or python3 in your command")
+        
+
+    envs = sys.argv[1:python_idx]
+    env_dict = {}
+    for env in envs:
+        key, value = env.split("=")
+        env_dict[key] = value
+
+    file_ = sys.argv[python_idx + 1]
+    args = sys.argv[python_idx + 2:]
+    if os.path.exists('.vscode/launch.json'):
+        launch = json.load(open('.vscode/launch.json'))
+    else:
+        launch = {
+            "version": "0.2.0",
+            "configurations": []
+        }
+
+    config = {
+        "name": f"Python: {' '.join(sys.argv[2:])}",
+        "type": "python",
+        "request": "launch",
+        "program": f"{file_}",
+        "env": env_dict,
+        "console": "integratedTerminal",
+        "args": args,
+        "cwd": cwd
+    }
+
+    launch['configurations'].append(config)
+    if not os.path.exists('.vscode'):
+        os.makedirs('.vscode')
+    with open('.vscode/launch.json', 'w') as f:
+        json.dump(launch, f, indent=4)
+
