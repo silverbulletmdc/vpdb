@@ -53,7 +53,7 @@ Then you can debug your python file by clicking the corresponding button.
 
 ## TODO
 
-[] Support run file in different directories. 
+- [ ] Support run file in different directories. 
 
 ## Update Log
 ### 2021.07.08
